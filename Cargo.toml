@@ -1,0 +1,63 @@
+[package]
+name = "{{project-name}}"
+version = "0.0.1"
+authors = ["{{authors}}"]
+edition = "2018"
+repository = ""
+readme = "README.md"
+license = "GPL-3.0-or-later"
+keywords = [""]
+description = """
+Your project description.
+"""
+
+[workspace]
+members = []
+
+[dependencies]
+human-panic = "1.0"
+anyhow = "1.0"
+thiserror = "1.0"
+
+[dev-dependencies]
+assert_cmd = "1.0"
+predicates = "1.0"
+lazy_static = "1.4"
+pretty_assertions = "0.6"
+
+[package.metadata.release]
+upload-doc = true
+no-dev-version = true
+pre-release-commit-message = "Release {{crate_name}} {{version}} / {{date}}"
+
+[profile.dev]
+opt-level=0
+debug = true
+rpath = false
+lto = false
+debug-assertions = true
+codegen-units = 4
+
+[profile.release]
+opt-level=3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1
+
+[profile.test]
+opt-level = 1
+debug = true
+rpath = false
+lto = false
+debug-assertions = true
+codegen-units = 4
+
+[profile.bench]
+opt-level = 3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1
