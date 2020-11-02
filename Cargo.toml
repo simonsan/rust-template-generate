@@ -4,9 +4,11 @@ version = "0.0.1"
 authors = ["{{authors}}"]
 edition = "2018"
 repository = ""
+documentation = ""
 readme = "README.md"
 license = "GPL-3.0-or-later"
 keywords = [""]
+categories = [""]
 description = """
 Your project description.
 """
