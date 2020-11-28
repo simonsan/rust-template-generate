@@ -18,8 +18,10 @@ members = []
 
 [dependencies]
 human-panic = "1.0"
-anyhow = "1.0"
 thiserror = "1.0"
+eyre = "0.6.3"
+stable-eyre = "0.2"
+color-eyre = "0.5"
 
 [dev-dependencies]
 assert_cmd = "1.0"
