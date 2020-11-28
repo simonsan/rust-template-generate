@@ -1,4 +1,4 @@
-name: libtwitch-rs tests
+name: CI-tests
 on:
   push:
     branches:
