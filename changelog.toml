@@ -1,14 +1,14 @@
 [[tag]]
-tag = "Breaking"
+tag = "breaking"
 name = "Breaking"
 
 [[tag]]
-tag = "Fixed"
+tag = "fixed"
 name = "Fixed"
 footers = ["Fixes"]
 
 [[tag]]
-tag = "Changed"
+tag = "changed"
 name = "Changed"
 
 [[tag]]
@@ -16,17 +16,17 @@ tag = "default"
 name = "Default"
 
 [[tag]]
-tag = "Improved"
+tag = "improved"
 name = "Improved"
 
 [[tag]]
-tag = "Added"
+tag = "added"
 name = "Added"
 
 [[tag]]
-tag = "Removed"
+tag = "removed"
 name = "Removed"
 
 [[tag]]
-tag = "Doc"
+tag = "doc"
 name = "Documentation"
