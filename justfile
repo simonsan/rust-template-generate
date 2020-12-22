@@ -1,41 +1,77 @@
-#!/bin/bash
+################################################################################
+#                                   Justfile                                   #
+#                                                                              #
+# Set of routines to execute for development work. As of 2019-05-01, `just`    #
+# does not work on Windows.                                                    #
+################################################################################
 
-package_name := `sed -En 's/name[[:space:]]*=[[:space:]]*"([^"]+)"/\1/p' Cargo.toml | head -1`
-package_version := `sed -En 's/version[[:space:]]*=[[:space:]]*"([^"]+)"/\1/p' Cargo.toml | head -1`
+# Runs the benchmark suite
+bench *ARGS:
+	cargo +nightly bench {{ARGS}}
 
-run-test TEST:
-	cargo test --test {{TEST}}
+# Builds the library.
+build:
+	cargo build --no-default-features
+	cargo build --all-features
+	@cargo build --all-features --example sieve
+	@cargo build --all-features --example tour
 
-debug TEST:
-	cargo test --test {{TEST}} --features debug
+# Checks the library for syntax and HIR errors.
+check:
+	cargo check --no-default-features
+	cargo check --all-features
 
-run-tests:
-	cargo test --all
+# Runs all of the recipes necessary for pre-publish.
+checkout: format check lint build doc test package
 
-bench:
-	cargo bench
+# Continually runs the development routines.
+ci:
+	just loop dev
 
-lint:
-	cargo clippy
-
+# Removes all build artifacts.
 clean:
 	cargo clean
-	find . -type f -name "*.orig" -exec rm {} \;
-	find . -type f -name "*.bk" -exec rm {} \;
-	find . -type f -name ".*~" -exec rm {} \;	
 
-docker-build:
-	mv docker/.dockerignore .dockerignore
-	docker build -t {{package_name}}_{{package_version}} -f docker/Dockerfile .
-	mv .dockerignore docker/.dockerignore
+cross_seq:
+	xargs -n1 -I'{}' env ENABLE_CROSS=1 TARGET='{}' ci/script.sh < ci/target_test.txt
+	xargs -n1 -I'{}' env ENABLE_CROSS=1 TARGET='{}' DISABLE_TESTS=1 ci/script.sh < ci/target_notest.txt
+	xargs -n1 -I'{}' cargo check --no-default-features --target '{}' < ci/target_local.txt
 
-docker-version:
-	docker run -t {{package_name}}_{{package_version}} rustc --version
-	docker run -t {{package_name}}_{{package_version}} cargo --version
-	docker run -t {{package_name}}_{{package_version}} rustup --version
+# Runs the development routines.
+dev: format lint doc test
 
-docker-run:
-	docker run -t {{package_name}}_{{package_version}} cargo run 
+# Builds the crate documentation.
+# @cargo +nightly doc --all-features {{ARGS}}
+doc *ARGS:
+	@cargo +nightly doc --all-features --no-deps {{ARGS}}
 
-docker-test:	
-	docker run -t {{package_name}}_{{package_version}} cargo test --all
+# Runs the formatter on all Rust files.
+format:
+	@cargo +nightly fmt -- --config-path rustfmt-nightly.toml
+
+# Runs the linter.
+lint: check
+	cargo clippy --no-default-features
+	cargo clippy --all-features
+
+# Continually runs some recipe from this file.
+loop action:
+	watchexec -w src -- "just {{action}}"
+
+# Looks for undefined behavior in the (non-doc) test suite.
+miri *ARGS:
+	cargo +nightly miri test --all-features -q --lib --tests {{ARGS}}
+
+# Packages the crate in preparation for publishing on crates.io
+package:
+	cargo package --allow-dirty
+
+# Publishes the crate to crates.io
+publish: checkout
+	cargo publish
+
+# Runs the test suites.
+# just miri
+test *ARGS: check lint
+        cargo test
+

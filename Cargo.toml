@@ -18,12 +18,14 @@ members = []
 
 [dependencies]
 human-panic = "1.0"
-thiserror = "1.0"
-eyre = "0.6.3"
+log = "0.4"
+simple-log = "1.0"
+eyre = "0.6"
 stable-eyre = "0.2"
-color-eyre = "0.5"
+structopt = "0.3"
 
 [dev-dependencies]
+thiserror = "1.0"
 assert_cmd = "1.0"
 predicates = "1.0"
 lazy_static = "1.4"

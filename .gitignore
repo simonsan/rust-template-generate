@@ -13,6 +13,9 @@ Cargo.lock
 # Caching
 .cache
 
+# Logs
+logs/
+
 # IDE
 .idea/
 /*.sublime-project
